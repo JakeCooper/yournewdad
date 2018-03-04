@@ -142,7 +142,7 @@ func getTaunt(turn int) string {
 	} else if turn < 60 {
 		return "Trustless, just like my ex-wife"
 	} else if turn < 90 {
-		return "I am Satoshi"
+		return "Craig Wright is Satoshi Nakamoto"
 	} else if turn < 120 {
 		return "BLOCKCHAINNNN"
 	} else if turn < 150 {
@@ -151,6 +151,26 @@ func getTaunt(turn int) string {
 		return "Future of the internet"
 	} else if turn < 180 {
 		return "BLOCK-MF-CHAIN"
+	} else if turn < 200 {
+		return "Reverse Mortgaged my house to buy bitcoin"
+	} else if turn < 250 {
+		return "Homeless: Accepting ETH"
+	} else if turn < 300 {
+		return "AI is out, blockchains are in"
+	} else if turn < 350 {
+		return "If this server had a blockchain maybe it would crash less"
+	} else if turn < 400 {
+		return "POS: Proof of stake or piece of sh*t; you decide"
+	} else if turn < 450 {
+		return "ETH > BTC"
+	} else if turn < 475 {
+		return "Peep my ICO live after this event. http://www.definitelynotascam.net/"
+	} else if turn < 500 {
+		return "Dogs on the blockchain"
+	} else if turn < 550 {
+		return "Ripple is garbage"
+	} else if turn < 600 {
+		return "BITCONNNNNNNNNECTTTTTTT"
 	}
 	return "Off The Blockchain"
 }
