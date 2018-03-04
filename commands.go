@@ -22,7 +22,7 @@ func handleStart(res http.ResponseWriter, req *http.Request) {
 		Name:     "Snakes on a Blockchain",
 		HeadType: "shades",
 		TailType: "fat-rattle",
-		HeadUrl:  toStringPointer("https://imgur.com/a/Xg0ki"),
+		HeadUrl:  toStringPointer("http://i.imgur.com/MLo4AQI.png"),
 	})
 }
 
@@ -35,7 +35,6 @@ func handleMove(res http.ResponseWriter, req *http.Request) {
 	if len(logging) > 0 {
 		log.Printf(str)
 	}
-	fmt.Println(str)
 	data, err := NewMoveRequest(str)
 	if err != nil {
 		respond(res, MoveResponse{
