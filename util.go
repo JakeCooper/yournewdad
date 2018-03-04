@@ -138,21 +138,21 @@ func IsSnakeHead(p *Point, data *MoveRequest) bool {
 
 func getTaunt(turn int) string {
 	if turn < 30 {
-		return "This dad likes what he sees"
+		return "Distributed Consensus"
 	} else if turn < 60 {
-		return "My god you've grown"
+		return "Trustless, just like my ex-wife"
 	} else if turn < 90 {
-		return "Let me get my glasses"
+		return "I am Satoshi"
 	} else if turn < 120 {
-		return "Great googaly moogaly you're stil here?"
+		return "BLOCKCHAINNNN"
 	} else if turn < 150 {
-		return "You sure your parents are ok with this?"
+		return "Job Posting: Blockchain 3.0 Developers ONLY"
 	} else if turn < 180 {
-		return "You wanna play with my snake, son?"
+		return "Future of the internet"
 	} else if turn < 180 {
-		return "Dont tell your mom about this."
+		return "BLOCK-MF-CHAIN"
 	}
-	return "I need to go to bed"
+	return "Off The Blockchain"
 }
 
 // get the position of all neighbouring snake tiles and
