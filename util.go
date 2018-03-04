@@ -23,7 +23,7 @@ func MinMax(data *MoveRequest, direc string) {
 	// generated the hazards without the hazards around the other snakes
 
 	data.GenHazards(data, false)
-	myHead := data.Snakes[data.MyIndex].Head()
+	myHead := data.Snakes.Data[data.MyIndex].Head()
 	if direc != "" {
 		myHeadtmp, err := GetPointInDirection(myHead, direc, data)
 		if err != nil {
@@ -120,11 +120,12 @@ func findGuaranteedClosestFood(data *MoveRequest, direc string) *FoodData {
 }
 
 func getTail(ind int, data *MoveRequest) (*Point, error) {
-	if (ind < 0) || (ind >= len(data.Snakes)) {
+	if (ind < 0) || (ind >= len(data.Snakes.Data)) {
 		return nil, errors.New("Index out of bounds")
 	}
-	snake := data.Snakes[ind]
-	return &(snake.Coords[len(snake.Coords)-1]), nil
+	snake := data.Snakes.Data[ind]
+	fmt.Println(snake)
+	return &(snake.Coords.Data[len(snake.Coords.Data)-1]), nil
 
 }
 
@@ -240,8 +241,8 @@ func toStringPointer(str string) *string {
 }
 
 func getMyHead(data *MoveRequest) (*Point, error) {
-	for _, snake := range data.Snakes {
-		if snake.Id == data.You && len(data.You) > 0 {
+	for _, snake := range data.Snakes.Data {
+		if snake.Id == data.You.Id && len(data.You.Body.Data) > 0 {
 			return snake.Head(), nil
 		}
 	}

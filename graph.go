@@ -29,7 +29,7 @@ func quickStats2(data *MoveRequest, direc string) *MetaDataDirec {
 	}
 
 	data.GenHazards(data, false)
-	myHead := data.Snakes[data.MyIndex].Head()
+	myHead := data.Snakes.Data[data.MyIndex].Head()
 	if direc != "" {
 		myHeadtmp, err := GetPointInDirection(myHead, direc, data)
 		if err != nil {
@@ -49,8 +49,8 @@ func quickStats2(data *MoveRequest, direc string) *MetaDataDirec {
 	ksd := make(map[int]*SnakeData)
 	// make the first item priority 1 so that if statement
 	// at the end of the loop is executed
-	for i, snake := range data.Snakes {
-		head := &snake.Coords[0]
+	for i, snake := range data.Snakes.Data {
+		head := &snake.Coords.Data[0]
 		moves := -1
 		if i == data.MyIndex {
 			moves = 0

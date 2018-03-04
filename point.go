@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
 )
 
@@ -16,19 +14,20 @@ const (
 )
 
 type Point struct {
+	Object string `json:"object"`
 	X int `json:"x"`
 	Y int `json:"y"`
 }
 
-func (point *Point) UnmarshalJSON(data []byte) error {
-	var coords []int
-	json.Unmarshal(data, &coords)
-	if len(coords) != 2 {
-		return errors.New("Bad set of coordinates: " + string(data))
-	}
-	*point = Point{X: coords[0], Y: coords[1]}
-	return nil
-}
+// func (point *Point) UnmarshalJSON(data []byte) error {
+// 	pnt
+// 	json.Unmarshal(data, &coords)
+// 	if len(coords) != 2 {
+// 		return errors.New("Bad set of coordinates: " + string(data))
+// 	}
+// 	*point = Point{X: coords[0], Y: coords[1]}
+// 	return nil
+// }
 
 func (point *Point) String() string {
 	return fmt.Sprintf("%d,%d", point.X, point.Y)
@@ -52,7 +51,7 @@ func (point *Point) getUp(data *MoveRequest, hazards bool) *Point {
 	if point.Y == 0 {
 		return nil
 	}
-	ret := &Point{point.X, point.Y - 1}
+	ret := &Point{X: point.X, Y: point.Y - 1}
 	if data.Hazards[ret.String()] && !hazards {
 		return nil
 	}
@@ -65,7 +64,7 @@ func (point *Point) getDown(data *MoveRequest, hazards bool) *Point {
 	if point.Y == data.Height-1 {
 		return nil
 	}
-	ret := &Point{point.X, point.Y + 1}
+	ret := &Point{X: point.X, Y: point.Y + 1}
 	if data.Hazards[ret.String()] && !hazards {
 		return nil
 	}
@@ -76,7 +75,7 @@ func (point *Point) getLeft(data *MoveRequest, hazards bool) *Point {
 	if point.X == 0 {
 		return nil
 	}
-	ret := &Point{point.X - 1, point.Y}
+	ret := &Point{X: point.X - 1, Y: point.Y}
 	if data.Hazards[ret.String()] && !hazards {
 		return nil
 	}
@@ -87,7 +86,7 @@ func (point *Point) getRight(data *MoveRequest, hazards bool) *Point {
 	if point.X == data.Width-1 {
 		return nil
 	}
-	ret := &Point{point.X + 1, point.Y}
+	ret := &Point{X: point.X + 1, Y: point.Y}
 	if data.Hazards[ret.String()] && !hazards {
 		return nil
 	}
@@ -110,7 +109,7 @@ func (point *Point) Right(data *MoveRequest) *Point {
 	if point.X == data.Width-1 {
 		return nil
 	}
-	ret := &Point{point.X + 1, point.Y}
+	ret := &Point{X: point.X + 1, Y: point.Y}
 	if data.Hazards[ret.String()] {
 		return nil
 	}

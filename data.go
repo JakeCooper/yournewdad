@@ -128,11 +128,11 @@ func (m *MetaDataDirec) String() string {
 // used to find and set the length of your snake globally in the
 // metatdata object
 func (m *MetaData) SetMyLength(data *MoveRequest) {
-	for i, snake := range data.Snakes {
-		if snake.Id == data.You && len(data.You) > 0 {
-			m.MyLength = len(snake.Coords)
-			swap(data.Snakes, i, len(data.Snakes)-1)
-			m.MyIndex = len(data.Snakes) - 1
+	for i, snake := range data.Snakes.Data {
+		if snake.Id == data.You.Id && len(data.You.Body.Data) > 0 {
+			m.MyLength = len(snake.Coords.Data)
+			swap(data.Snakes.Data, i, len(data.Snakes.Data)-1)
+			m.MyIndex = len(data.Snakes.Data) - 1
 			//m.MyIndex = i
 		}
 	}
@@ -178,9 +178,9 @@ func (s *SnakeData) String() string {
 }
 
 func (m *MetaData) GenTailData(data *MoveRequest) {
-	for i, snake := range data.Snakes {
+	for i, snake := range data.Snakes.Data {
 		tail, _ := getTail(i, data)
-		head := snake.Coords[0]
+		head := snake.Coords.Data[0]
 
 		m.Hazards[tail.String()] = false
 		d := head.Down(data)
@@ -209,12 +209,12 @@ func (m *MetaData) GenTailData(data *MoveRequest) {
 //      in order for the area they are blocking to be open
 func (m *MetaData) GenSnakeHash(data *MoveRequest) {
 	m.SnakeHash = make(map[string]*SnakeData)
-	for i, snake := range data.Snakes {
-		for j, coord := range snake.Coords {
+	for i, snake := range data.Snakes.Data {
+		for j, coord := range snake.Coords.Data {
 			m.SnakeHash[coord.String()] = &SnakeData{
 				id:         i,
-				lengthLeft: len(snake.Coords) - j - 1,
-				pnt:        &Point{coord.X, coord.Y},
+				lengthLeft: len(snake.Coords.Data) - j - 1,
+				pnt:        &Point{X: coord.X, Y: coord.Y},
 			}
 		}
 	}
@@ -246,10 +246,10 @@ func (m *MetaData) GenHazards(data *MoveRequest, snakeMovesAsHazards bool) {
 	m.Hazards = make(map[string]bool)
 	m.KillZones = make(map[string]bool)
 	m.GenTailData(data)
-	for _, snake := range data.Snakes {
-		snake.HeadPoint = &(snake.Coords[0])
+	for _, snake := range data.Snakes.Data {
+		snake.HeadPoint = &(snake.Coords.Data[0])
 
-		if len(snake.Coords) >= m.MyLength && data.You != snake.Id && snakeMovesAsHazards {
+		if len(snake.Coords.Data) >= m.MyLength && data.You.Id != snake.Id && snakeMovesAsHazards {
 			head := snake.Head()
 			d := head.Down(data)
 			if d != nil {
@@ -268,7 +268,7 @@ func (m *MetaData) GenHazards(data *MoveRequest, snakeMovesAsHazards bool) {
 				m.Hazards[d.String()] = true
 			}
 
-		} else if len(snake.Coords) < m.MyLength && data.You != snake.Id && snakeMovesAsHazards {
+		} else if len(snake.Coords.Data) < m.MyLength && data.You.Id != snake.Id && snakeMovesAsHazards {
 			head := snake.Head()
 			d := head.Down(data)
 			if d != nil {
@@ -288,8 +288,8 @@ func (m *MetaData) GenHazards(data *MoveRequest, snakeMovesAsHazards bool) {
 			}
 
 		}
-		for i, coord := range snake.Coords {
-			if i == len(snake.Coords)-1 {
+		for i, coord := range snake.Coords.Data {
+			if i == len(snake.Coords.Data)-1 {
 				break
 			}
 			m.Hazards[coord.String()] = true
@@ -301,7 +301,7 @@ func (m *MetaData) GenHazards(data *MoveRequest, snakeMovesAsHazards bool) {
 // generates a map of all the food points
 func (m *MetaData) GenFoodMap(data *MoveRequest) {
 	m.FoodMap = make(map[string]bool)
-	for _, food := range data.Food {
+	for _, food := range data.Food.Data {
 		m.FoodMap[food.String()] = true
 	}
 }
@@ -342,15 +342,40 @@ type GameStartResponse struct {
 	TailType string  `json:"tail_type"`
 }
 
+type YouBody struct {
+	Data []Point `json:"data"`
+	Object string `json:"object"`
+}
+
+type You struct {
+	Body YouBody `json:"body"`
+	Health  int `json:"health"`
+	Id string `json:"id"`
+	Length int `json:"length"`
+	Name string `json:"name"`
+	Object string `json:"object"`
+	Taunt string `json:"taunt"`
+}
+
+type PointObject struct {
+	Data []Point `json:"data"`
+	Object string `json:"object"`
+}
+
+type SnakeObject struct {
+	Data []*Snake `json:"data"`
+	Object string `json:"object"`
+}
+
 type MoveRequest struct {
 	// static
-	GameId string   `json:"game_id"`
+	GameId int   `json:"id"`
 	Height int      `json:"height"`
 	Width  int      `json:"width"`
 	Turn   int      `json:"turn"`
-	Food   []Point  `json:"food"`
-	Snakes []*Snake `json:"snakes"`
-	You    string   `json:"you"`
+	Food   PointObject  `json:"food"`
+	Snakes SnakeObject `json:"snakes"`
+	You    You   `json:"you"`
 
 	// added here for convenience
 	MetaData
@@ -405,6 +430,8 @@ func getMoveRequestString(req *http.Request) string {
 func NewMoveRequest(str string) (*MoveRequest, error) {
 	res := new(MoveRequest)
 	err := json.Unmarshal([]byte(str), res)
+	fmt.Println(res)
+	fmt.Println(err)
 	if err != nil {
 		return nil, err
 	}
@@ -421,11 +448,12 @@ func NewMoveRequest(str string) (*MoveRequest, error) {
 // Allows decoding a string or number identifier in JSON
 // by removing any surrounding quotes and storing in a string
 type Snake struct {
-	Coords       []Point `json:"coords"`
-	HealthPoints int     `json:"health_points"`
+	Coords       PointObject `json:"body"`
+	HealthPoints int     `json:"health"`
 	Id           string  `json:"id"`
 	Name         string  `json:"name"`
 	Taunt        string  `json:"taunt"`
+	Object 		 string  `json:"object"`
 	HeadStack    *Stack
 	TailStack    *Stack
 	HeadPoint    *Point

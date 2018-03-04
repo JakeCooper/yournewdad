@@ -49,8 +49,8 @@ func GetFunctionName(i interface{}) string {
 
 func imAgressive(data *MoveRequest) bool {
 	if !data.MetaData.tightSpace &&
-		data.Snakes[data.MyIndex].HealthPoints > 80 &&
-		data.MyLength > 2*data.Width+len(data.Food) {
+		data.Snakes.Data[data.MyIndex].HealthPoints > 80 &&
+		data.MyLength > 2*data.Width+len(data.Food.Data) {
 		return true
 	}
 	return false
@@ -100,7 +100,7 @@ func FilterTieAreas(data *MoveRequest, moves []string) []string {
 	ret := []string{}
 
 	for _, move := range moves {
-		head := data.Snakes[data.MyIndex].Head()
+		head := data.Snakes.Data[data.MyIndex].Head()
 
 		p, _ := GetPointInDirection(head, move, data)
 
@@ -303,7 +303,7 @@ func FilterMinimizeSpace(data *MoveRequest, moves []string) []string {
 func FilterMovesVsSpace(data *MoveRequest, moves []string) []string {
 	ret := []string{}
 	for _, direc := range moves {
-		if data.Direcs[direc].MovesVsSpace > len(data.Food) {
+		if data.Direcs[direc].MovesVsSpace > len(data.Food.Data) {
 			//fmt.Printf("%v\n", ret)
 			ret = append(ret, direc)
 		}
@@ -327,7 +327,7 @@ func FilterPossibleMoves(data *MoveRequest, directions []string) []string {
 	ret := []string{}
 	for _, direc := range directions {
 		if data.Direcs[direc].Moves > 0 {
-			head := data.Snakes[data.MyIndex].Head()
+			head := data.Snakes.Data[data.MyIndex].Head()
 			p, _ := GetPointInDirectionHazards(head, direc, data)
 
 			if p != nil && !data.Hazards[p.String()] {
