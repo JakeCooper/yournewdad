@@ -22,7 +22,7 @@ func handleStart(res http.ResponseWriter, req *http.Request) {
 		Name:     "Snakes on a Blockchain",
 		HeadType: "shades",
 		TailType: "fat-rattle",
-		HeadUrl:  toStringPointer("http://i.imgur.com/a/Xg0ki"),
+		HeadUrl:  toStringPointer("https://imgur.com/a/Xg0ki"),
 	})
 }
 
