@@ -171,6 +171,12 @@ func getTaunt(turn int) string {
 		return "Ripple is garbage"
 	} else if turn < 600 {
 		return "BITCONNNNNNNNNECTTTTTTT"
+	} else if turn < 650 {
+		return "Elixir isn't webscale. Long live Golang."
+	} else if turn < 675 {
+		return "Even Bitcoin has more transactions than this server."
+	} else if turn < 700 {
+		return "Send ETH: 0xBAe33EC3765498AA53B386420A2DCAe93E343C6a"
 	}
 	return "Off The Blockchain"
 }
